@@ -1,0 +1,359 @@
+:root {
+  --paper: #f7f4ee;
+  --ink: #1f2723;
+  --muted: #69736e;
+  --sage: #6e8f79;
+  --deep-green: #284a3b;
+  --clay: #b8694d;
+  --sky: #d7e7ee;
+  --line: rgba(31, 39, 35, 0.14);
+  --panel: rgba(255, 252, 246, 0.9);
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(135deg, var(--paper), var(--sky));
+  color: var(--ink);
+}
+
+button {
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 18px;
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.practice-stage {
+  position: relative;
+  display: grid;
+  min-height: calc(100vh - 36px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.56);
+  border-radius: 8px;
+  background: #d8dccf;
+}
+
+.photo-panel {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(247, 244, 238, 0.92) 0%, rgba(247, 244, 238, 0.72) 42%, rgba(247, 244, 238, 0.12) 100%),
+    url("assets/chair-practice-room.png") center / cover;
+}
+
+.practice-panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: min(660px, 100%);
+  min-height: 100%;
+  padding: clamp(22px, 4vw, 46px);
+}
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.eyebrow,
+.step-count,
+.session-clock small {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.app-version {
+  margin-left: 0.45rem;
+  color: var(--deep-green);
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: clamp(2.2rem, 5vw, 4.7rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.session-clock {
+  min-width: 104px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 252, 246, 0.72);
+  text-align: right;
+}
+
+.session-clock span {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.session-clock small {
+  display: block;
+  margin-top: 7px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.routine-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 28px 0;
+}
+
+.tab,
+.icon-button,
+.primary-action {
+  min-height: 44px;
+  border-radius: 8px;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.tab {
+  min-width: 80px;
+  border: 1px solid var(--line);
+  background: rgba(255, 252, 246, 0.72);
+  color: var(--deep-green);
+  font-weight: 760;
+}
+
+.tab.is-active {
+  background: var(--deep-green);
+  color: white;
+}
+
+.movement-view {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: center;
+  gap: 28px;
+  margin: auto 0;
+}
+
+.breath-orbit {
+  display: grid;
+  place-items: center;
+  width: 160px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(40, 74, 59, 0.18);
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 35%, #ffffff 0 28%, #d7e7ee 29% 52%, #b7cbbd 53% 100%);
+  box-shadow: inset 0 0 0 16px rgba(255, 255, 255, 0.42);
+  transform: scale(0.88);
+  transition: transform 3800ms ease-in-out;
+}
+
+.breath-orbit.is-expanded {
+  transform: scale(1);
+}
+
+.breath-orbit span {
+  color: var(--deep-green);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.movement-copy h2 {
+  margin-bottom: 12px;
+  font-size: clamp(2rem, 4vw, 4rem);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.movement-copy p:last-child {
+  max-width: 48ch;
+  margin-bottom: 0;
+  color: #37413c;
+  font-size: clamp(1rem, 1.7vw, 1.25rem);
+  line-height: 1.55;
+}
+
+.timer-track {
+  height: 8px;
+  margin-top: 28px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(31, 39, 35, 0.14);
+}
+
+.timer-track div {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--sage), var(--clay));
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr minmax(160px, 1.4fr) 1fr;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.icon-button {
+  border: 1px solid var(--line);
+  background: rgba(255, 252, 246, 0.78);
+  color: var(--deep-green);
+  font-weight: 780;
+}
+
+.primary-action {
+  background: var(--clay);
+  color: white;
+  font-size: 1.08rem;
+  font-weight: 850;
+}
+
+.tab:hover,
+.icon-button:hover,
+.primary-action:hover {
+  transform: translateY(-1px);
+}
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: calc(100vh - 36px);
+}
+
+.info-block {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 18px;
+  box-shadow: 0 12px 32px rgba(31, 39, 35, 0.08);
+}
+
+.info-block h2 {
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.info-block p,
+.move-list-item button {
+  width: 100%;
+  padding: 9px 8px;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.move-list-item {
+  color: #4d5852;
+  font-size: 0.96rem;
+  line-height: 1.5;
+}
+
+.movement-list {
+  flex: 1;
+  overflow: auto;
+}
+
+.movement-list ol {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.move-list-item.is-current button {
+  background: rgba(110, 143, 121, 0.18);
+  color: var(--deep-green);
+  font-weight: 760;
+}
+
+@media (max-width: 980px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .practice-stage,
+  .side-panel {
+    min-height: auto;
+  }
+
+  .practice-stage {
+    min-height: 720px;
+  }
+
+  .side-panel {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .app-shell {
+    padding: 10px;
+  }
+
+  .photo-panel {
+    background:
+      linear-gradient(180deg, rgba(247, 244, 238, 0.94) 0%, rgba(247, 244, 238, 0.78) 58%, rgba(247, 244, 238, 0.38) 100%),
+      url("assets/chair-practice-room.png") center / cover;
+  }
+
+  .topbar,
+  .movement-view {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    display: grid;
+  }
+
+  .session-clock {
+    width: 100%;
+    text-align: left;
+  }
+
+  .movement-view {
+    gap: 18px;
+  }
+
+  .breath-orbit {
+    width: 132px;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .side-panel {
+    grid-template-columns: 1fr;
+  }
+}

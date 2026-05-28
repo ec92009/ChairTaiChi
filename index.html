@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chair Tai Chi</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="practice-stage" aria-label="Chair Tai Chi practice">
+        <div class="photo-panel" aria-hidden="true"></div>
+
+        <div class="practice-panel">
+          <header class="topbar">
+            <div>
+              <p class="eyebrow">Seated practice <span class="app-version">v89.0</span></p>
+              <h1>Chair Tai Chi</h1>
+            </div>
+            <div class="session-clock" aria-live="polite">
+              <span id="sessionTime">05:00</span>
+              <small id="routineName">Desk Reset</small>
+            </div>
+          </header>
+
+          <div class="routine-tabs" role="tablist" aria-label="Choose routine">
+            <button class="tab is-active" type="button" data-routine="desk">5 min</button>
+            <button class="tab" type="button" data-routine="calm">10 min</button>
+            <button class="tab" type="button" data-routine="long">20 min</button>
+          </div>
+
+          <section class="movement-view" aria-live="polite">
+            <div class="breath-orbit" id="breathOrb">
+              <span id="breathCue">Inhale</span>
+            </div>
+            <div class="movement-copy">
+              <p class="step-count" id="stepCount">Step 1 of 5</p>
+              <h2 id="moveTitle">Arrive Tall</h2>
+              <p id="moveDescription">
+                Sit near the front of the chair, feet grounded, hands resting lightly on your thighs.
+              </p>
+            </div>
+          </section>
+
+          <div class="timer-track" aria-label="Current movement progress">
+            <div id="moveProgress"></div>
+          </div>
+
+          <section class="controls" aria-label="Practice controls">
+            <button class="icon-button" type="button" id="previousBtn">Prev</button>
+            <button class="primary-action" type="button" id="playBtn">Start</button>
+            <button class="icon-button" type="button" id="nextBtn">Next</button>
+          </section>
+        </div>
+      </section>
+
+      <aside class="side-panel" aria-label="Routine details">
+        <section class="info-block">
+          <h2>Today</h2>
+          <p id="routineSummary">A short seated reset for desk stiffness, breath, and posture.</p>
+        </section>
+
+        <section class="info-block movement-list">
+          <h2>Sequence</h2>
+          <ol id="moveList"></ol>
+        </section>
+
+        <section class="info-block">
+          <h2>Safety</h2>
+          <p>
+            Keep movements pain-free, breathe normally, and stop if you feel dizzy, sharp pain,
+            or unusual shortness of breath.
+          </p>
+        </section>
+      </aside>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
