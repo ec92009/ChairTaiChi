@@ -29,9 +29,22 @@
             <button class="tab" type="button" data-routine="long">20 min</button>
           </div>
 
+          <div class="audio-toggles">
+            <button class="toggle-btn" type="button" id="musicToggle" aria-pressed="false">
+              <span class="icon">🎵</span> Music: Off
+            </button>
+            <button class="toggle-btn" type="button" id="voiceToggle" aria-pressed="true">
+              <span class="icon">🔊</span> Voice: On
+            </button>
+          </div>
+
           <section class="movement-view" aria-live="polite">
-            <div class="breath-orbit" id="breathOrb">
-              <span id="breathCue">Inhale</span>
+            <div class="visual-stage">
+              <canvas id="animationCanvas" width="600" height="400"></canvas>
+              <div class="camera-tip">Right-drag: Orbit | Shift-drag: Pan | Scroll: Zoom | Dbl-click: Reset</div>
+              <div class="breath-label" id="breathOrb">
+                <span id="breathCue">Inhale</span>
+              </div>
             </div>
             <div class="movement-copy">
               <p class="step-count" id="stepCount">Step 1 of 5</p>
