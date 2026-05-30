@@ -106,7 +106,11 @@ const state = {
   lastTick: null,
   breathExpanded: false,
   musicOn: false,
-  voiceOn: true
+  voiceOn: true,
+  musicVolume: 0.5,
+  voiceVolume: 0.8,
+  soundscapePreset: "calm",
+  autoOrbit: false
 };
 
 const sessionTime = document.querySelector("#sessionTime");
@@ -125,6 +129,13 @@ const breathCue = document.querySelector("#breathCue");
 const musicToggle = document.querySelector("#musicToggle");
 const voiceToggle = document.querySelector("#voiceToggle");
 const tabs = Array.from(document.querySelectorAll(".tab"));
+const musicVolumeInput = document.querySelector("#musicVolume");
+const voiceVolumeInput = document.querySelector("#voiceVolume");
+const soundscapeSelect = document.querySelector("#soundscapeSelect");
+const camFrontBtn = document.querySelector("#camFrontBtn");
+const camSideBtn = document.querySelector("#camSideBtn");
+const camTopBtn = document.querySelector("#camTopBtn");
+const camOrbitToggle = document.querySelector("#camOrbitToggle");
 
 // --- Web Audio API Ambient Synthesizer ---
 class AmbientMusicSynth {
@@ -136,12 +147,26 @@ class AmbientMusicSynth {
     this.chordIndex = 0;
     this.chimeTimeout = null;
     this.chordTimeout = null;
-    this.chords = [
-      [130.81, 164.81, 196.00, 246.94, 293.66], // Cmaj9
-      [174.61, 220.00, 261.63, 329.63, 392.00], // Fmaj9
-      [196.00, 246.94, 293.66, 440.00, 659.25], // G6/9
-      [220.00, 261.63, 329.63, 392.00, 493.88]  // Am9
-    ];
+    this.soundscapes = {
+      calm: [
+        [130.81, 164.81, 196.00, 246.94, 293.66], // Cmaj9
+        [174.61, 220.00, 261.63, 329.63, 392.00], // Fmaj9
+        [196.00, 246.94, 293.66, 440.00, 659.25], // G6/9
+        [220.00, 261.63, 329.63, 392.00, 493.88]  // Am9
+      ],
+      forest: [
+        [65.41, 98.00, 130.81, 196.00, 261.63],   // C2, G2, C3, G3, C4
+        [87.31, 130.81, 174.61, 261.63, 349.23],   // F2, C3, F3, C4, F4
+        [73.42, 110.00, 146.83, 220.00, 293.66],   // D2, A2, D3, A3, D4
+        [98.00, 146.83, 196.00, 293.66, 392.00]    // G2, D3, G3, D4, G4
+      ],
+      ocean: [
+        [110.00, 164.81, 220.00, 277.18, 329.63], // Amaj9
+        [130.81, 196.00, 261.63, 311.13, 392.00], // Cmaj9
+        [146.83, 220.00, 293.66, 369.99, 440.00], // Dmaj9
+        [98.00, 146.83, 196.00, 233.08, 293.66]   // Gmaj9
+      ]
+    };
   }
 
   init() {
@@ -161,7 +186,7 @@ class AmbientMusicSynth {
       this.ctx.resume();
     }
 
-    this.masterGain.gain.linearRampToValueAtTime(state.breathExpanded ? 0.35 : 0.22, this.ctx.currentTime + 2.0);
+    this.masterGain.gain.linearRampToValueAtTime((state.breathExpanded ? 0.35 : 0.22) * state.musicVolume, this.ctx.currentTime + 2.0);
     this.playNextPadChord();
     this.scheduleChime();
   }
@@ -194,6 +219,12 @@ class AmbientMusicSynth {
     this.oscillators = [];
   }
 
+  updateVolume() {
+    if (!this.isPlaying || !this.masterGain) return;
+    const targetVolume = (state.breathExpanded ? 0.35 : 0.22) * state.musicVolume;
+    this.masterGain.gain.setValueAtTime(targetVolume, this.ctx.currentTime);
+  }
+
   playNextPadChord() {
     if (!this.isPlaying) return;
 
@@ -209,8 +240,9 @@ class AmbientMusicSynth {
     });
     this.oscillators = [];
 
-    const frequencies = this.chords[this.chordIndex];
-    this.chordIndex = (this.chordIndex + 1) % this.chords.length;
+    const activeChords = this.soundscapes[state.soundscapePreset] || this.soundscapes.calm;
+    const frequencies = activeChords[this.chordIndex];
+    this.chordIndex = (this.chordIndex + 1) % activeChords.length;
 
     const fadeInTime = 4.0;
     frequencies.forEach(freq => {
@@ -222,10 +254,18 @@ class AmbientMusicSynth {
       
       const filter = this.ctx.createBiquadFilter();
       filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(800, this.ctx.currentTime);
+      
+      let cutoff = 800;
+      if (state.soundscapePreset === 'forest') cutoff = 320;
+      if (state.soundscapePreset === 'ocean') cutoff = 1100;
+      filter.frequency.setValueAtTime(cutoff, this.ctx.currentTime);
 
       gainNode.gain.setValueAtTime(0.0, this.ctx.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.035, this.ctx.currentTime + fadeInTime);
+      
+      let baseGain = 0.035;
+      if (state.soundscapePreset === 'forest') baseGain = 0.045;
+      if (state.soundscapePreset === 'ocean') baseGain = 0.03;
+      gainNode.gain.linearRampToValueAtTime(baseGain * state.musicVolume, this.ctx.currentTime + fadeInTime);
 
       osc.connect(filter);
       filter.connect(gainNode);
@@ -234,6 +274,29 @@ class AmbientMusicSynth {
       osc.start();
       this.oscillators.push({ osc, gainNode });
     });
+
+    // Add low ocean surge swell if in ocean mode
+    if (state.soundscapePreset === 'ocean' && this.ctx) {
+      const waveOsc = this.ctx.createOscillator();
+      const waveGain = this.ctx.createGain();
+      waveOsc.type = 'triangle';
+      waveOsc.frequency.setValueAtTime(55.0, this.ctx.currentTime); // low rumble
+      
+      const waveFilter = this.ctx.createBiquadFilter();
+      waveFilter.type = 'lowpass';
+      waveFilter.frequency.setValueAtTime(90, this.ctx.currentTime);
+
+      waveGain.gain.setValueAtTime(0.0, this.ctx.currentTime);
+      waveGain.gain.linearRampToValueAtTime(0.12 * state.musicVolume, this.ctx.currentTime + 3.0);
+      waveGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 9.5);
+
+      waveOsc.connect(waveFilter);
+      waveFilter.connect(waveGain);
+      waveGain.connect(this.masterGain);
+
+      waveOsc.start();
+      waveOsc.stop(this.ctx.currentTime + 9.7);
+    }
 
     this.chordTimeout = setTimeout(() => {
       this.playNextPadChord();
@@ -253,23 +316,43 @@ class AmbientMusicSynth {
   playChime() {
     if (!this.isPlaying || !this.ctx) return;
     
-    const chimeFreqs = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+    let chimeFreqs = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+    if (state.soundscapePreset === 'forest') {
+      chimeFreqs = [293.66, 329.63, 392.00, 440.00, 523.25, 587.33];
+    } else if (state.soundscapePreset === 'ocean') {
+      chimeFreqs = [659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51];
+    }
     const freq = chimeFreqs[Math.floor(Math.random() * chimeFreqs.length)];
 
     const osc = this.ctx.createOscillator();
     const gainNode = this.ctx.createGain();
 
-    osc.type = 'sine';
+    osc.type = state.soundscapePreset === 'forest' ? 'triangle' : 'sine';
     osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
 
     gainNode.gain.setValueAtTime(0.0, this.ctx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(0.015, this.ctx.currentTime + 0.1);
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 3.0);
+    
+    let peakVol = 0.015 * state.musicVolume;
+    let decayTime = state.soundscapePreset === 'forest' ? 1.5 : 3.0;
+
+    gainNode.gain.linearRampToValueAtTime(peakVol, this.ctx.currentTime + 0.1);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + decayTime);
 
     const delayNode = this.ctx.createDelay();
-    delayNode.delayTime.value = 0.4;
+    
+    let delayVal = 0.4;
+    let feedbackVal = 0.4;
+    if (state.soundscapePreset === 'ocean') {
+      delayVal = 0.7;
+      feedbackVal = 0.55;
+    } else if (state.soundscapePreset === 'forest') {
+      delayVal = 0.25;
+      feedbackVal = 0.25;
+    }
+
+    delayNode.delayTime.value = delayVal;
     const delayGain = this.ctx.createGain();
-    delayGain.gain.value = 0.4;
+    delayGain.gain.value = feedbackVal;
 
     osc.connect(gainNode);
     gainNode.connect(this.masterGain);
@@ -280,12 +363,12 @@ class AmbientMusicSynth {
     delayGain.connect(this.masterGain);
 
     osc.start();
-    osc.stop(this.ctx.currentTime + 3.2);
+    osc.stop(this.ctx.currentTime + decayTime + 0.2);
   }
 
   setBreathingIntensity(isExpanded) {
     if (!this.isPlaying || !this.masterGain) return;
-    const targetVolume = isExpanded ? 0.35 : 0.22;
+    const targetVolume = (isExpanded ? 0.35 : 0.22) * state.musicVolume;
     this.masterGain.gain.linearRampToValueAtTime(targetVolume, this.ctx.currentTime + 3.8);
   }
 }
@@ -301,6 +384,7 @@ const VoiceGuide = {
     const msg = new SpeechSynthesisUtterance(`${title}. ${text}`);
     msg.rate = 0.85;
     msg.pitch = 1.0;
+    msg.volume = state.voiceVolume; // Apply the slider voice volume
     
     const voices = window.speechSynthesis.getVoices();
     const englishVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) ||
@@ -563,10 +647,10 @@ function drawTeslaTorso(ctx, shX, shY, shZ, lShX, lShY, lShZ, rShX, rShY, rShZ, 
     z: shCenterZ + vz * chestHeight
   };
 
-  // 3D torso dimensions
-  const wTop = 13;
-  const wBot = 8.5;
-  const dFront = 5.5;
+  // 3D torso dimensions (expanding dynamically with breathVal for physical breathing effect)
+  const wTop = 13 + breathVal * 1.5;
+  const wBot = 8.5 + breathVal * 0.5;
+  const dFront = 5.5 + breathVal * 1.0;
   const dBack = 4.5;
 
   // Compute 8 vertices of the 3D tapered torso box
@@ -820,6 +904,11 @@ function drawScene(timestamp) {
 
   const t = timestamp ? timestamp / 1000 : Date.now() / 1000;
   
+  // Auto-orbit camera angle adjustment
+  if (state.autoOrbit && !isDragging && !isTouchDragging) {
+    camera.yaw += 0.0035;
+  }
+
   // Smooth breathing oscillation (7.6 second cycle)
   const breathPhase = (t * 2 * Math.PI) / 7.6;
   const breathVal = (Math.sin(breathPhase) + 1) / 2; // 0 to 1
@@ -958,19 +1047,75 @@ function drawScene(timestamp) {
     rHandZ = 14 + cosVal * 8;
 
   } else if (currentMove === "Root the Feet") {
-    lElbowX = -14; lElbowY = 12; lElbowZ = 8;
-    lHandX = -9; lHandY = 32; lHandZ = 20;
-    rElbowX = 14; rElbowY = 12; rElbowZ = 8;
-    rHandX = 9; rHandY = 32; rHandZ = 20;
-    
-  } else if (currentMove === "Parting Clouds" || currentMove === "Crane Spreads Wings") {
-    const wave = Math.sin(animTime * 1.2);
-    
-    lElbowX = -13; lElbowY = 12 - wave * 16; lElbowZ = 12;
-    lHandX = -6; lHandY = 24 - wave * 32; lHandZ = 18;
+    const stretch = breathVal * 2;
+    shCenterY -= stretch;
+    lShoulderY -= stretch;
+    rShoulderY -= stretch;
+    headY -= stretch * 1.2;
 
-    rElbowX = 13; rElbowY = 12 + wave * 16; rElbowZ = 12;
-    rHandX = 6; rHandY = 24 + wave * 32; rHandZ = 18;
+    // Hands resting flat on the thighs (near the knees)
+    lElbowX = -13; lElbowY = 16 - stretch; lElbowZ = 12;
+    lHandX = -8; lHandY = 35; lHandZ = 24;
+
+    rElbowX = 13; rElbowY = 16 - stretch; rElbowZ = 12;
+    rHandX = 8; rHandY = 35; rHandZ = 24;
+    
+  } else if (currentMove === "Parting Clouds") {
+    const wave = Math.sin(animTime * 1.2);
+    const cosWave = Math.cos(animTime * 1.2);
+    const expansion = (wave + 1) / 2; // 0 to 1
+
+    shCenterY -= expansion * 2;
+    lShoulderY -= expansion * 2;
+    rShoulderY -= expansion * 2;
+    headY -= expansion * 2.4;
+
+    // Left arm sweeps wide left and up
+    lElbowX = -13 - expansion * 10;
+    lElbowY = 12 - expansion * 12;
+    lElbowZ = 8 + cosWave * 6;
+
+    lHandX = -6 - expansion * 22;
+    lHandY = 24 - expansion * 26;
+    lHandZ = 16 + wave * 10;
+
+    // Right arm sweeps wide right and up
+    rElbowX = 13 + expansion * 10;
+    rElbowY = 12 - expansion * 12;
+    rElbowZ = 8 + cosWave * 6;
+
+    rHandX = 6 + expansion * 22;
+    rHandY = 24 - expansion * 26;
+    rHandZ = 16 + wave * 10;
+
+  } else if (currentMove === "Crane Spreads Wings") {
+    const cycle = Math.sin(animTime * 1.0);
+    const twist = cycle * 0.25;
+    const cosT = Math.cos(twist);
+    const sinT = Math.sin(twist);
+
+    lShoulderX = -13 * cosT; lShoulderZ = -13 * sinT;
+    rShoulderX = 13 * cosT; rShoulderZ = 13 * sinT;
+    headX = 3 * sinT; headZ = 3 * cosT - 3;
+
+    const lSpeed = cycle;
+    const rSpeed = -cycle;
+
+    lElbowX = -14 * cosT;
+    lElbowY = 12 - lSpeed * 15;
+    lElbowZ = 8 + lSpeed * 6 - 13 * sinT;
+    
+    lHandX = -8 * cosT;
+    lHandY = 22 - lSpeed * 32;
+    lHandZ = 16 + lSpeed * 12 - 13 * sinT;
+
+    rElbowX = 14 * cosT;
+    rElbowY = 12 - rSpeed * 15;
+    rElbowZ = 8 + rSpeed * 6 + 13 * sinT;
+
+    rHandX = 8 * cosT;
+    rHandY = 22 - rSpeed * 32;
+    rHandZ = 16 + rSpeed * 12 + 13 * sinT;
 
   } else if (currentMove === "Turn the Moon") {
     const twist = Math.sin(animTime * 1.0);
@@ -989,21 +1134,54 @@ function drawScene(timestamp) {
     rHandX = 3 * cosT; rHandY = 28; rHandZ = 22 + 12 * sinT;
 
   } else if (currentMove === "Pouring Tea") {
-    const cycle = animTime * 1.8;
-    lElbowX = -14 + Math.sin(cycle) * 4; lElbowY = 14 + Math.cos(cycle) * 4; lElbowZ = 10 + Math.sin(cycle) * 6;
-    lHandX = -8 + Math.sin(cycle) * 8; lHandY = 24 + Math.cos(cycle) * 8; lHandZ = 20 + Math.sin(cycle) * 12;
+    const cycle = Math.sin(animTime * 1.1);
+    const tilt = cycle * 0.15; // side tilt
     
-    rElbowX = 14 + Math.sin(cycle + Math.PI) * 4; rElbowY = 14 + Math.cos(cycle + Math.PI) * 4; rElbowZ = 10 + Math.sin(cycle + Math.PI) * 6;
-    rHandX = 8 + Math.sin(cycle + Math.PI) * 8; rHandY = 24 + Math.cos(cycle + Math.PI) * 8; rHandZ = 20 + Math.sin(cycle + Math.PI) * 12;
+    const cosT = Math.cos(tilt * 0.5);
+    const sinT = Math.sin(tilt * 0.5);
+
+    lShoulderX = -13 * cosT; lShoulderY = -12 + tilt * 8; lShoulderZ = -13 * sinT;
+    rShoulderX = 13 * cosT; rShoulderY = -12 - tilt * 8; rShoulderZ = 13 * sinT;
+    shCenterY = -12 + tilt * 4;
+    headX = tilt * 6; headY = -36 + Math.abs(tilt) * 3;
+
+    const action = (Math.sin(animTime * 1.5) + 1) / 2; // 0 to 1 pouring gesture
+
+    // Left holds a low cup
+    lElbowX = -12 * cosT; lElbowY = 18 + tilt * 4; lElbowZ = 14;
+    lHandX = -4 * cosT; lHandY = 26; lHandZ = 20;
+
+    // Right hand tilts and extends to pour
+    rElbowX = 10 * cosT; rElbowY = 8 - tilt * 4 - action * 4; rElbowZ = 16;
+    rHandX = 2 * cosT; rHandY = 12 - action * 12; rHandZ = 24 + action * 6;
 
   } else if (currentMove === "Brush Knee") {
-    const cycle = Math.sin(animTime * 1.3);
-    
-    lElbowX = -12; lElbowY = 28 + cycle * 4; lElbowZ = 16 + cycle * 6;
-    lHandX = -6 + cycle * 6; lHandY = 34 + cycle * 2; lHandZ = 26 + cycle * 10;
-    
-    rElbowX = 14; rElbowY = 12; rElbowZ = 10 + cycle * 8;
-    rHandX = 8 - cycle * 3; rHandY = 12; rHandZ = 22 + cycle * 18;
+    const cycle = Math.sin(animTime * 1.2);
+    const twist = cycle * 0.45;
+    const cosT = Math.cos(twist);
+    const sinT = Math.sin(twist);
+
+    lShoulderX = -13 * cosT; lShoulderZ = -13 * sinT;
+    rShoulderX = 13 * cosT; rShoulderZ = 13 * sinT;
+    headX = 4 * sinT; headZ = 4 * cosT - 4;
+
+    if (cycle >= 0) {
+      // Left hand brushes knee
+      lElbowX = -10 * cosT; lElbowY = 26; lElbowZ = 16 - 13 * sinT;
+      lHandX = -2 * cosT; lHandY = 32; lHandZ = 24 - 13 * sinT;
+
+      // Right hand pushes forward
+      rElbowX = 10 * cosT; rElbowY = 14; rElbowZ = 12 + cycle * 12 + 13 * sinT;
+      rHandX = 6 * cosT; rHandY = 12; rHandZ = 20 + cycle * 24 + 13 * sinT;
+    } else {
+      // Right hand brushes knee
+      rElbowX = 10 * cosT; rElbowY = 26; rElbowZ = 16 + 13 * sinT;
+      rHandX = 2 * cosT; rHandY = 32; rHandZ = 24 + 13 * sinT;
+
+      // Left hand pushes forward
+      lElbowX = -10 * cosT; lElbowY = 14; lElbowZ = 12 - cycle * 12 - 13 * sinT;
+      lHandX = -6 * cosT; lHandY = 12; lHandZ = 20 - cycle * 24 - 13 * sinT;
+    }
 
   } else if (currentMove === "Seated Push") {
     const push = breathVal;
@@ -1384,6 +1562,84 @@ previousBtn.addEventListener("click", previousMove);
 if (musicToggle) musicToggle.addEventListener("click", toggleMusic);
 if (voiceToggle) voiceToggle.addEventListener("click", toggleVoice);
 
+// Volume mixing event listeners
+if (musicVolumeInput) {
+  musicVolumeInput.addEventListener("input", (e) => {
+    state.musicVolume = parseFloat(e.target.value);
+    ambientSynth.updateVolume();
+  });
+}
+
+if (voiceVolumeInput) {
+  voiceVolumeInput.addEventListener("input", (e) => {
+    state.voiceVolume = parseFloat(e.target.value);
+  });
+}
+
+// Soundscape theme selector listener
+if (soundscapeSelect) {
+  soundscapeSelect.addEventListener("change", (e) => {
+    state.soundscapePreset = e.target.value;
+    // If playing, restart the synth immediately with the new soundscape configuration
+    if (state.playing && state.musicOn) {
+      ambientSynth.stop();
+      setTimeout(() => {
+        if (state.playing && state.musicOn) {
+          ambientSynth.start();
+        }
+      }, 300);
+    }
+  });
+}
+
+// Camera Preset bindings
+if (camFrontBtn) {
+  camFrontBtn.addEventListener("click", () => {
+    state.autoOrbit = false;
+    updateOrbitToggleStyle();
+    camera.yaw = 0;
+    camera.pitch = 0.1;
+    camera.panX = 0;
+    camera.panY = 8;
+  });
+}
+
+if (camSideBtn) {
+  camSideBtn.addEventListener("click", () => {
+    state.autoOrbit = false;
+    updateOrbitToggleStyle();
+    camera.yaw = Math.PI / 2;
+    camera.pitch = 0.1;
+    camera.panX = 0;
+    camera.panY = 8;
+  });
+}
+
+if (camTopBtn) {
+  camTopBtn.addEventListener("click", () => {
+    state.autoOrbit = false;
+    updateOrbitToggleStyle();
+    camera.yaw = 0;
+    camera.pitch = Math.PI / 2 - 0.1;
+    camera.panX = 0;
+    camera.panY = 8;
+  });
+}
+
+function updateOrbitToggleStyle() {
+  if (camOrbitToggle) {
+    camOrbitToggle.classList.toggle("is-active", state.autoOrbit);
+    camOrbitToggle.textContent = state.autoOrbit ? "🔄 Orbiting" : "🔄 Orbit";
+  }
+}
+
+if (camOrbitToggle) {
+  camOrbitToggle.addEventListener("click", () => {
+    state.autoOrbit = !state.autoOrbit;
+    updateOrbitToggleStyle();
+  });
+}
+
 // Setup Breath Cue Interval (7.6 second complete cycle, toggled every 3.8s)
 setInterval(updateBreathCue, 3800);
 
@@ -1393,7 +1649,14 @@ let dragMode = "orbit"; // "orbit" or "pan"
 const canvasEl = document.getElementById("animationCanvas");
 let dragStartX = 0, dragStartY = 0;
 
+// Mobile Touch Control State
+let isTouchDragging = false;
+let touchStartX = 0, touchStartY = 0;
+let touchStartDist = 0;
+let touchMode = "orbit"; // "orbit" or "zoom"
+
 if (canvasEl) {
+  // --- Mouse Listeners ---
   canvasEl.addEventListener("mousedown", (e) => {
     isDragging = true;
     dragStartX = e.clientX;
@@ -1443,11 +1706,69 @@ if (canvasEl) {
 
   // Double click to Reset View
   canvasEl.addEventListener("dblclick", () => {
+    state.autoOrbit = false;
+    updateOrbitToggleStyle();
     camera.yaw = cameraDefaults.yaw;
     camera.pitch = cameraDefaults.pitch;
     camera.zoom = cameraDefaults.zoom;
     camera.panX = cameraDefaults.panX;
     camera.panY = cameraDefaults.panY;
+  });
+
+  // --- Mobile Touch Gestures ---
+  canvasEl.addEventListener("touchstart", (e) => {
+    isTouchDragging = true;
+    if (e.touches.length === 1) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchMode = "orbit";
+    } else if (e.touches.length === 2) {
+      touchStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      touchStartDist = Math.sqrt(dx * dx + dy * dy) || 1;
+      touchMode = "zoom";
+    }
+  }, { passive: true });
+
+  canvasEl.addEventListener("touchmove", (e) => {
+    if (!isTouchDragging) return;
+    
+    if (touchMode === "orbit" && e.touches.length === 1) {
+      const dx = e.touches[0].clientX - touchStartX;
+      const dy = e.touches[0].clientY - touchStartY;
+      
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      
+      camera.yaw += dx * 0.0075;
+      camera.pitch = Math.max(-Math.PI / 2 + 0.05, Math.min(Math.PI / 2 - 0.05, camera.pitch + dy * 0.0075));
+    } else if (touchMode === "zoom" && e.touches.length === 2) {
+      const currentMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const currentMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const currentDist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+      // Pinch zoom
+      const factor = currentDist / touchStartDist;
+      touchStartDist = currentDist;
+      camera.zoom = Math.max(0.6, Math.min(6.0, camera.zoom * (1 + (factor - 1) * 0.8)));
+
+      // Two-finger drag pan
+      const panDx = currentMidX - touchStartX;
+      const panDy = currentMidY - touchStartY;
+      touchStartX = currentMidX;
+      touchStartY = currentMidY;
+
+      camera.panX += panDx / camera.zoom;
+      camera.panY += panDy / camera.zoom;
+    }
+  }, { passive: true });
+
+  canvasEl.addEventListener("touchend", () => {
+    isTouchDragging = false;
   });
 }
 

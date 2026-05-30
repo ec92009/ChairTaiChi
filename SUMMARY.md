@@ -1,28 +1,37 @@
-# Conversation Summary: Volumetric 3D Torso and Realistic Visor Wrapping/Rotation
+# Project Summary: 3D Robot, Audio Mixers, Soundscapes, and View Controls
 
-This conversation focused on two main enhancements to the 3D Tesla-like robot character in the **Chair Tai Chi** application:
-1. **Volumetric 3D Torso**: Enhancing the robot's flat chest and back plates into a fully volumetric 3D tapered box.
-2. **Realistic Head & Visor Rotation & Clipping**: Aligning the head visor to rotate in the direction of the chest, and clipping the visor to the helmet sphere boundary.
+We have successfully completed all core and backlog enhancements to the **Chair Tai Chi** application. Below is a summary of the features and architectural changes implemented:
 
 ---
 
-## 1. Torso Geometry & Layering
-* **Local Orthogonal Coordinate Frame**: Constructed a local coordinate frame `(U, V, P)` where `U` is the shoulder direction unit vector, `P` is the forward vector (via `U x S` where `S` is the spine vector), and `V` is the orthogonal downward vector (`P x U`).
-* **3D Tapered Prism**: Computed the 3D coordinates of 8 corners of the torso box (width 13 at shoulders tapering to 8.5 at waist) and projected them to 2D screen coordinates.
-* **Painter's Algorithm Depth-Sorting**: Organized the 6 faces (Front, Back, Left Side, Right Side, Top, Bottom) in an array, calculated their average projected Z-depth, and sorted them descending. Drawing the faces back-to-front resolved all overlap issues under camera orbits.
-* **Realistic Textures & Creases**:
-  * **Front Face**: Silver-white gradient, diagonal specular highlight, and the glowing status core.
-  * **Back Face**: Gray gradient with the dark horizontal charging slot.
-  * **Side Faces**: Dark slate gray shadows with vertical crease panel lines at 50% width.
-  * **Top/Bottom Faces**: Standard metallic gradients.
+## 1. Volumetric 3D Torso & Faceplate Realism
+* **Volumetric Torso Box**: Replaced the paper-thin torso plates with a true 3D tapered box (width 13 at shoulders to 8.5 at waist) that rotates realistically based on a local orthogonal coordinate frame `(U, V, P)` computed via vector cross products.
+* **Painter's Depth Sorting**: Sorted the 6 torso faces by their projected average Z-depth and drew them back-to-front. Shaded with distinct gradients (white front, dark sides/bottom) to convey realistic volumetric depth from any orbit angle. Added vertical crease lines for realistic metal plating.
+* **Visor Clipping & Turning**: Passes the chest's forward direction to the head drawer to offset the visor dynamically in 3D. Clipped the visor to the helmet sphere using `ctx.clip()`, giving it a smooth integrated look that wraps naturally around the profile boundaries without overflowing.
 
 ---
 
-## 2. Visor Alignment & Clipping
-* **Head Turning**: Passed the chest forward direction vector `(px, py, pz)` to `drawTeslaHead3D`. Offset the visor's 3D coordinates along this vector, enabling the head to turn in the direction of the chest twists (e.g., during "Turn the Moon").
-* **Clipping Mask**: Set up a circular clipping path matching the helmet sphere (`ctx.clip()`) before drawing the visor. This ensures the visor ellipse is confined within the head boundaries and never overflows when viewed from side profiles.
+## 2. Interactive Audio Mixing & Soundscapes
+* **Independent Volume Sliders**: Added two range sliders to mix the volume of the Web Audio synthesizer and the Web Speech guide independently in real-time.
+* **Procedural Soundscape Themes**:
+  * **Calm Flow (Default)**: Normal register Cmaj9/Fmaj9 pad chords and sine-wave chimes under an 800Hz lowpass filter.
+  * **Deep Forest**: Low C2/F2/D2 octave-fifth drone, low filter cutoff (320Hz), and triangle-wave woody chime echoes.
+  * **Ocean Breath**: Wave-surge rumble oscillator (triangle wave at 55Hz pulsing via gain envelopes) and high pentatonic chime delays simulating watery echoes.
 
 ---
 
-## 3. Backlog & Future Improvements
-A backlog has been prepared to track next steps, including visual refinements, additional routines, and soundscape options.
+## 3. Real-time Kinematics & Breathing Torso Swells
+* **Chest Breathing Swells**: The torso dimensions (`wTop` and `dFront`) scale dynamically with the breathing cycle (`breathVal`), causing the robot's chest to physically expand on Inhale and contract on Exhale.
+* **Specialized Kinematics**:
+  * *Root the Feet*: Relaxed resting hands on knees, chest breathing swells, and a slow spine elongation.
+  * *Parting Clouds*: Arms starting at chest center, sweeping wide in arches, and circling back.
+  * *Crane Spreads Wings*: One arm sweeping high/back with wrist upward, other arm low/back with wrist downward, and light body twisting.
+  * *Pouring Tea*: Torso tilting to the side, one arm holding a teapot, pouring towards the opposite hand.
+  * *Brush Knee*: One hand brushing across the knee, other hand pushing forward, with torso twisting coordination.
+
+---
+
+## 4. Preset Camera Views & Mobile Touch Gestures
+* **Canvas Preset Toolbar**: Added a floating overlay on the canvas stage for instant view presets (`Front`, `Side`, `Top`) and a slow, continuous `🔄 Auto-Orbit` mode.
+* **Orbit Pause**: Auto-orbit is temporarily paused when the user actively drags or touches the screen, resuming smoothly on release.
+* **Native Touch Controls**: Bound multi-touch listeners to the canvas supporting swipe-orbits, pinch-zooms, and two-finger midpoint-drag pans for seamless mobile and tablet interaction.

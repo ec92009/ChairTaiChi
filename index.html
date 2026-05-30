@@ -29,19 +29,49 @@
             <button class="tab" type="button" data-routine="long">20 min</button>
           </div>
 
-          <div class="audio-toggles">
-            <button class="toggle-btn" type="button" id="musicToggle" aria-pressed="false">
-              <span class="icon">🎵</span> Music: Off
-            </button>
-            <button class="toggle-btn" type="button" id="voiceToggle" aria-pressed="true">
-              <span class="icon">🔊</span> Voice: On
-            </button>
+          <div class="settings-card">
+            <div class="audio-toggles">
+              <button class="toggle-btn" type="button" id="musicToggle" aria-pressed="false">
+                <span class="icon">🎵</span> Music: Off
+              </button>
+              <button class="toggle-btn" type="button" id="voiceToggle" aria-pressed="true">
+                <span class="icon">🔊</span> Voice: On
+              </button>
+            </div>
+            
+            <div class="settings-row">
+              <div class="settings-group">
+                <label for="soundscapeSelect">Soundscape</label>
+                <select id="soundscapeSelect" class="soundscape-select">
+                  <option value="calm">Calm Flow (Default)</option>
+                  <option value="forest">Deep Forest (Low Drone & Woody Chimes)</option>
+                  <option value="ocean">Ocean Breath (Wave Swells & Echoes)</option>
+                </select>
+              </div>
+
+              <div class="volume-controls">
+                <div class="volume-slider-group">
+                  <label for="musicVolume">🎵 Music</label>
+                  <input type="range" id="musicVolume" min="0" max="1" step="0.05" value="0.5" aria-label="Music volume">
+                </div>
+                <div class="volume-slider-group">
+                  <label for="voiceVolume">🔊 Voice</label>
+                  <input type="range" id="voiceVolume" min="0" max="1" step="0.05" value="0.8" aria-label="Voice volume">
+                </div>
+              </div>
+            </div>
           </div>
 
           <section class="movement-view" aria-live="polite">
             <div class="visual-stage">
+              <div class="canvas-controls">
+                <button class="canvas-btn" type="button" id="camFrontBtn" title="Front View">🎥 Front</button>
+                <button class="canvas-btn" type="button" id="camSideBtn" title="Side Profile">🎥 Side</button>
+                <button class="canvas-btn" type="button" id="camTopBtn" title="Top-Down View">🎥 Top</button>
+                <button class="canvas-btn" type="button" id="camOrbitToggle" title="Toggle Auto-Orbit">🔄 Orbit</button>
+              </div>
               <canvas id="animationCanvas" width="600" height="400"></canvas>
-              <div class="camera-tip">Right-drag: Orbit | Shift-drag: Pan | Scroll: Zoom | Dbl-click: Reset</div>
+              <div class="camera-tip">Drag: Orbit | Shift-drag/2-finger: Pan | Scroll/Pinch: Zoom | Dbl-click: Reset</div>
               <div class="breath-label" id="breathOrb">
                 <span id="breathCue">Inhale</span>
               </div>
