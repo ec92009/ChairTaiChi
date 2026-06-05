@@ -1,0 +1,68 @@
+/* Shared chooser header — four full-page options */
+
+.chooser-nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  padding: 10px 12px;
+  background: #141a17;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+.chooser-nav__tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: min(920px, 100%);
+  margin: 0;
+}
+
+.chooser-nav__tabs a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: #d4e3db;
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+.chooser-nav__tabs a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(184, 220, 196, 0.35);
+  transform: translateY(-1px);
+}
+
+.chooser-nav__tabs a.is-active {
+  background: rgba(110, 143, 121, 0.35);
+  border-color: rgba(184, 220, 196, 0.55);
+  color: #f2faf5;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.chooser-nav__tabs a:focus-visible {
+  outline: 2px solid #8fb39a;
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .chooser-nav__tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .chooser-nav__tabs a {
+    min-height: 40px;
+    font-size: 0.82rem;
+  }
+}

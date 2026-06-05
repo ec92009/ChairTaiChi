@@ -1,0 +1,68 @@
+/* Top bar: day / night only (production) */
+
+.app-theme-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 0;
+  padding: 8px 14px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: #2a1810;
+  color: #fde6d4;
+  border-bottom: 2px solid #2a1810;
+}
+
+.theme-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 0;
+  border: 2px solid #2a1810;
+  background: #fff8f0;
+  color: #2a1810;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+.theme-mode-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.theme-mode-toggle[aria-pressed="true"] {
+  background: #c45c2a;
+  color: #fff8f0;
+  border-color: #2a1810;
+}
+
+.theme-mode-toggle__icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+body.theme-sunrise-editorial[data-theme="night"] .app-theme-bar {
+  background: #0a0605;
+  color: #f5e8dc;
+  border-bottom-color: rgba(245, 232, 220, 0.2);
+}
+
+body.theme-sunrise-editorial[data-theme="night"] .theme-mode-toggle {
+  background: #221816;
+  color: #f5e8dc;
+  border-color: rgba(245, 232, 220, 0.35);
+}
+
+body.theme-sunrise-editorial[data-theme="night"] .theme-mode-toggle[aria-pressed="true"] {
+  background: #ff9a62;
+  color: #1a1210;
+}

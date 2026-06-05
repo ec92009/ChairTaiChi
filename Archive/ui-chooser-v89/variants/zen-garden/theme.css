@@ -1,0 +1,248 @@
+/* B · Zen Garden — immersive room, soft glass, circular breath, timeline */
+
+body.theme-zen-garden {
+  --paper: #f4f7f2;
+  --ink: #1c2a24;
+  --muted: #5f7268;
+  --sage: #5f9b7a;
+  --deep-green: #2d5a47;
+  --clay: #c4845c;
+  --sky: #e3efe8;
+  --line: rgba(45, 90, 71, 0.14);
+  --panel: rgba(255, 255, 255, 0.55);
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  background: radial-gradient(ellipse at 30% 0%, #e8f3ec 0%, var(--paper) 48%, #dfe9e3 100%);
+}
+
+body.theme-zen-garden .proposal-ribbon {
+  background: rgba(45, 90, 71, 0.92);
+  color: #e8f5ee;
+}
+
+body.theme-zen-garden h1,
+body.theme-zen-garden .movement-copy h2 {
+  font-family: "Noto Serif JP", Georgia, serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+body.theme-zen-garden h1 {
+  font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+  color: var(--deep-green);
+}
+
+body.theme-zen-garden .movement-copy h2 {
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+}
+
+body.theme-zen-garden .app-shell {
+  gap: 14px;
+  padding: 12px;
+}
+
+body.theme-zen-garden .practice-stage {
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 28px 60px rgba(45, 90, 71, 0.16);
+  background: #c8d4c4;
+}
+
+body.theme-zen-garden .photo-panel {
+  background:
+    linear-gradient(105deg, rgba(244, 247, 242, 0.55) 0%, rgba(244, 247, 242, 0.2) 45%, rgba(244, 247, 242, 0.05) 100%),
+    url("../../../assets/chair-practice-room.png") center / cover;
+}
+
+body.theme-zen-garden .practice-panel {
+  padding: clamp(18px, 3vw, 36px);
+}
+
+body.theme-zen-garden .topbar {
+  align-items: center;
+}
+
+body.theme-zen-garden .eyebrow {
+  color: var(--sage);
+  letter-spacing: 0.14em;
+}
+
+body.theme-zen-garden .session-clock {
+  width: 96px;
+  height: 96px;
+  min-width: 96px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(95, 155, 122, 0.35);
+  box-shadow: 0 8px 24px rgba(45, 90, 71, 0.12);
+}
+
+body.theme-zen-garden .session-clock span {
+  font-size: 1.25rem;
+}
+
+body.theme-zen-garden .session-clock small {
+  font-size: 0.62rem;
+  margin-top: 4px;
+  max-width: 72px;
+  line-height: 1.2;
+}
+
+body.theme-zen-garden .practice-workspace {
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+}
+
+body.theme-zen-garden .visual-stage {
+  min-height: 280px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background:
+    radial-gradient(circle at 50% 88%, rgba(95, 155, 122, 0.2) 0%, transparent 42%),
+    radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.85) 0%, rgba(227, 239, 232, 0.5) 100%);
+  box-shadow: inset 0 0 80px rgba(45, 90, 71, 0.06);
+}
+
+body.theme-zen-garden .breath-label {
+  width: 88px;
+  height: 88px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  bottom: 18px;
+  background: radial-gradient(circle at 35% 30%, #ffffff, rgba(227, 239, 232, 0.95));
+  border: 2px solid rgba(95, 155, 122, 0.45);
+  font-size: 0.68rem;
+  box-shadow: 0 0 0 8px rgba(95, 155, 122, 0.12), 0 12px 28px rgba(45, 90, 71, 0.14);
+}
+
+body.theme-zen-garden .breath-label.is-expanded {
+  transform: translateX(-50%) scale(1.14);
+  box-shadow: 0 0 0 14px rgba(95, 155, 122, 0.18), 0 16px 36px rgba(45, 90, 71, 0.18);
+}
+
+body.theme-zen-garden .canvas-controls {
+  top: auto;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px);
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+
+body.theme-zen-garden .canvas-btn {
+  border-radius: 999px;
+  font-size: 0.65rem;
+}
+
+body.theme-zen-garden .camera-tip {
+  display: none;
+}
+
+body.theme-zen-garden .movement-copy {
+  padding: 8px 4px 0;
+}
+
+body.theme-zen-garden .step-count {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(95, 155, 122, 0.16);
+  color: var(--deep-green);
+}
+
+body.theme-zen-garden .timer-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(45, 90, 71, 0.1);
+}
+
+body.theme-zen-garden .timer-track div {
+  background: linear-gradient(90deg, var(--sage), #8bc4a0);
+  box-shadow: 0 0 12px rgba(95, 155, 122, 0.45);
+}
+
+body.theme-zen-garden .routine-tabs {
+  margin: 12px 0 0;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--line);
+}
+
+body.theme-zen-garden .tab {
+  flex: 1;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+}
+
+body.theme-zen-garden .tab.is-active {
+  background: var(--deep-green);
+  box-shadow: 0 4px 14px rgba(45, 90, 71, 0.25);
+}
+
+body.theme-zen-garden .settings-card,
+body.theme-zen-garden .info-block {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 10px 30px rgba(45, 90, 71, 0.08);
+}
+
+body.theme-zen-garden .primary-action {
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--deep-green), var(--sage));
+}
+
+body.theme-zen-garden .movement-list ol {
+  list-style: none;
+  padding-left: 0;
+  border-left: 2px solid rgba(95, 155, 122, 0.35);
+  margin-left: 8px;
+}
+
+body.theme-zen-garden .move-list-item {
+  position: relative;
+  padding-left: 18px;
+}
+
+body.theme-zen-garden .move-list-item::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(95, 155, 122, 0.35);
+  border: 2px solid white;
+}
+
+body.theme-zen-garden .move-list-item.is-current::before {
+  background: var(--sage);
+  box-shadow: 0 0 0 4px rgba(95, 155, 122, 0.25);
+}
+
+body.theme-zen-garden .move-list-item.is-current button {
+  background: transparent;
+  font-weight: 700;
+}
+
+@media (max-width: 980px) {
+  body.theme-zen-garden .practice-workspace {
+    grid-template-columns: 1fr;
+  }
+}

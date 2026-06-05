@@ -1,0 +1,352 @@
+/* D · Sunrise Editorial — magazine layout, bold rules, sequence rail, overlay copy */
+
+body.theme-sunrise-editorial {
+  --paper: #fff8f0;
+  --ink: #2a1810;
+  --muted: #7a5c48;
+  --sage: #3d6b52;
+  --deep-green: #1f3d2e;
+  --clay: #c45c2a;
+  --sky: #fde6d4;
+  --line: rgba(42, 24, 16, 0.18);
+  --panel: #fffdf9;
+  font-family: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  background: linear-gradient(165deg, #fff8f0 0%, #fde6d4 45%, #f5d4bc 100%);
+}
+
+body.theme-sunrise-editorial .proposal-ribbon {
+  background: #2a1810;
+  color: #fde6d4;
+}
+
+body.theme-sunrise-editorial .proposal-ribbon a {
+  color: #ffb88a;
+}
+
+body.theme-sunrise-editorial .app-shell {
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 0;
+  padding: 14px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+body.theme-sunrise-editorial .side-panel {
+  order: -1;
+  gap: 0;
+  border-right: 3px solid var(--ink);
+  padding-right: 14px;
+  min-height: auto;
+}
+
+body.theme-sunrise-editorial .info-block {
+  border-radius: 0;
+  border: 0;
+  border-bottom: 2px solid var(--ink);
+  background: transparent;
+  box-shadow: none;
+  padding: 16px 8px 18px;
+}
+
+body.theme-sunrise-editorial .info-block h2 {
+  font-family: Fraunces, Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+body.theme-sunrise-editorial .movement-list {
+  flex: 1;
+}
+
+body.theme-sunrise-editorial .movement-list ol {
+  padding-left: 0;
+  list-style: none;
+  counter-reset: seq;
+  gap: 0;
+}
+
+body.theme-sunrise-editorial .move-list-item {
+  counter-increment: seq;
+  border-top: 1px solid var(--line);
+}
+
+body.theme-sunrise-editorial .move-list-item button {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 8px;
+  align-items: baseline;
+  padding: 12px 4px;
+  border-radius: 0;
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1rem;
+}
+
+body.theme-sunrise-editorial .move-list-item button::before {
+  content: counter(seq, decimal-leading-zero);
+  font-size: 0.82rem;
+  color: var(--clay);
+  font-weight: 700;
+}
+
+body.theme-sunrise-editorial .move-list-item.is-current button {
+  background: transparent;
+  color: var(--clay);
+  font-weight: 700;
+  border-left: 4px solid var(--clay);
+  padding-left: 8px;
+}
+
+body.theme-sunrise-editorial .practice-stage {
+  border-radius: 0;
+  border: 3px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 8px 8px 0 var(--ink);
+}
+
+body.theme-sunrise-editorial .photo-panel {
+  display: none;
+}
+
+body.theme-sunrise-editorial .practice-panel {
+  padding: 20px 24px 28px;
+}
+
+body.theme-sunrise-editorial .topbar {
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 14px;
+}
+
+body.theme-sunrise-editorial h1 {
+  font-family: Fraunces, Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  font-variation-settings: "SOFT" 50;
+}
+
+body.theme-sunrise-editorial .eyebrow {
+  color: var(--clay);
+  font-family: "Instrument Sans", sans-serif;
+}
+
+body.theme-sunrise-editorial .session-clock {
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--clay);
+  color: white;
+  text-align: center;
+}
+
+body.theme-sunrise-editorial .session-clock span,
+body.theme-sunrise-editorial .session-clock small {
+  color: white;
+}
+
+body.theme-sunrise-editorial .practice-workspace {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+body.theme-sunrise-editorial .movement-view {
+  position: relative;
+  display: block;
+}
+
+body.theme-sunrise-editorial .visual-stage {
+  min-height: 340px;
+  border-radius: 0;
+  border: 2px solid var(--ink);
+  background: linear-gradient(180deg, #fffdf9 0%, #f8e8d8 100%);
+  box-shadow: none;
+}
+
+body.theme-sunrise-editorial .movement-copy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 20px 22px 24px;
+  background: linear-gradient(0deg, rgba(42, 24, 16, 0.88) 0%, rgba(42, 24, 16, 0.55) 55%, transparent 100%);
+  color: #fff8f0;
+  pointer-events: none;
+}
+
+body.theme-sunrise-editorial .step-count {
+  color: #ffb88a;
+  font-family: "Instrument Sans", sans-serif;
+}
+
+body.theme-sunrise-editorial .movement-copy h2 {
+  font-family: Fraunces, Georgia, serif;
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  color: #fffdf9;
+  margin-bottom: 8px;
+}
+
+body.theme-sunrise-editorial .movement-copy p:last-child {
+  color: rgba(255, 248, 240, 0.88);
+  max-width: 52ch;
+  font-size: 1rem;
+}
+
+body.theme-sunrise-editorial .breath-label {
+  top: 16px;
+  bottom: auto;
+  left: auto;
+  right: 16px;
+  transform: none;
+  border-radius: 0;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body.theme-sunrise-editorial .breath-label.is-expanded {
+  transform: scale(1.06);
+  background: var(--clay);
+  color: white;
+  border-color: var(--ink);
+}
+
+body.theme-sunrise-editorial .canvas-controls {
+  top: 16px;
+  left: 16px;
+}
+
+body.theme-sunrise-editorial .canvas-btn {
+  border-radius: 0;
+  border: 2px solid var(--ink);
+  font-weight: 700;
+}
+
+body.theme-sunrise-editorial .canvas-btn.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+body.theme-sunrise-editorial .timer-track {
+  height: 14px;
+  margin-top: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+}
+
+body.theme-sunrise-editorial .timer-track div {
+  border-radius: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--clay) 0,
+    var(--clay) 12px,
+    var(--sage) 12px,
+    var(--sage) 24px
+  );
+}
+
+body.theme-sunrise-editorial .controls-workspace-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+body.theme-sunrise-editorial .routine-tabs {
+  margin: 0;
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 2px solid var(--ink);
+}
+
+body.theme-sunrise-editorial .tab {
+  border-radius: 0;
+  border: 0;
+  border-right: 2px solid var(--ink);
+  min-height: 52px;
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1.05rem;
+}
+
+body.theme-sunrise-editorial .tab:last-child {
+  border-right: 0;
+}
+
+body.theme-sunrise-editorial .tab.is-active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+body.theme-sunrise-editorial .controls {
+  grid-column: 1 / -1;
+}
+
+body.theme-sunrise-editorial .icon-button,
+body.theme-sunrise-editorial .primary-action {
+  border-radius: 0;
+  border: 2px solid var(--ink);
+}
+
+body.theme-sunrise-editorial .primary-action {
+  background: var(--clay);
+  border-color: var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+body.theme-sunrise-editorial .primary-action:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+body.theme-sunrise-editorial .settings-card {
+  border-radius: 0;
+  border: 2px solid var(--ink);
+  background: var(--panel);
+  box-shadow: 4px 4px 0 rgba(42, 24, 16, 0.12);
+}
+
+body.theme-sunrise-editorial .toggle-btn,
+body.theme-sunrise-editorial .soundscape-select {
+  border-radius: 0;
+  border-width: 2px;
+}
+
+body.theme-sunrise-editorial .toggle-btn.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+@media (max-width: 980px) {
+  body.theme-sunrise-editorial .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  body.theme-sunrise-editorial .side-panel {
+    order: 2;
+    border-right: 0;
+    border-top: 3px solid var(--ink);
+    padding-right: 0;
+    padding-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  body.theme-sunrise-editorial .movement-list {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  body.theme-sunrise-editorial .side-panel {
+    grid-template-columns: 1fr;
+  }
+
+  body.theme-sunrise-editorial .controls-workspace-panel {
+    grid-template-columns: 1fr;
+  }
+
+  body.theme-sunrise-editorial .visual-stage {
+    min-height: 280px;
+  }
+}

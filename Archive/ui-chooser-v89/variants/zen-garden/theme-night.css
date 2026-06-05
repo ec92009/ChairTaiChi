@@ -1,0 +1,98 @@
+/* B · Zen Garden — night */
+
+body.theme-zen-garden[data-theme="night"] {
+  color-scheme: dark;
+  --paper: #0f1613;
+  --ink: #e6f0ea;
+  --muted: #8fa59a;
+  --sage: #7bc9a0;
+  --deep-green: #b8e6cc;
+  --clay: #e8a67a;
+  --sky: #16201c;
+  --line: rgba(184, 230, 204, 0.14);
+  --panel: rgba(22, 32, 28, 0.72);
+  background: radial-gradient(ellipse at 30% 0%, #1a2e24 0%, var(--paper) 50%, #0a100e 100%);
+}
+
+body.theme-zen-garden[data-theme="night"] .proposal-ribbon {
+  background: rgba(8, 14, 11, 0.96);
+  color: #c8e6d4;
+}
+
+body.theme-zen-garden[data-theme="night"] .photo-panel {
+  background:
+    linear-gradient(105deg, rgba(15, 22, 19, 0.88) 0%, rgba(15, 22, 19, 0.55) 45%, rgba(15, 22, 19, 0.2) 100%),
+    url("../../../assets/chair-practice-room.png") center / cover;
+  filter: brightness(0.42) saturate(0.7);
+}
+
+body.theme-zen-garden[data-theme="night"] .practice-stage {
+  background: #141c18;
+  border-color: rgba(123, 201, 160, 0.15);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45);
+}
+
+body.theme-zen-garden[data-theme="night"] .visual-stage {
+  background:
+    radial-gradient(circle at 50% 88%, rgba(123, 201, 160, 0.12) 0%, transparent 42%),
+    radial-gradient(circle at 50% 12%, rgba(30, 44, 38, 0.95) 0%, rgba(18, 28, 24, 0.85) 100%);
+  border-color: rgba(123, 201, 160, 0.2);
+}
+
+body.theme-zen-garden[data-theme="night"] .session-clock,
+body.theme-zen-garden[data-theme="night"] .settings-card,
+body.theme-zen-garden[data-theme="night"] .info-block {
+  background: rgba(22, 32, 28, 0.75);
+  border-color: var(--line);
+}
+
+body.theme-zen-garden[data-theme="night"] .breath-label {
+  background: radial-gradient(circle at 35% 30%, #243830, rgba(18, 28, 24, 0.98));
+  border-color: rgba(123, 201, 160, 0.4);
+  color: var(--deep-green);
+  box-shadow: 0 0 0 8px rgba(123, 201, 160, 0.1), 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+body.theme-zen-garden[data-theme="night"] .canvas-controls {
+  background: rgba(18, 28, 24, 0.8);
+}
+
+body.theme-zen-garden[data-theme="night"] .routine-tabs {
+  background: rgba(18, 28, 24, 0.65);
+}
+
+body.theme-zen-garden[data-theme="night"] .tab {
+  color: var(--muted);
+}
+
+body.theme-zen-garden[data-theme="night"] .tab.is-active {
+  background: #2d5a47;
+  color: #e8f5ee;
+}
+
+body.theme-zen-garden[data-theme="night"] .step-count {
+  background: rgba(123, 201, 160, 0.15);
+  color: var(--deep-green);
+}
+
+body.theme-zen-garden[data-theme="night"] .movement-copy p:last-child {
+  color: #b0c4ba;
+}
+
+body.theme-zen-garden[data-theme="night"] .icon-button,
+body.theme-zen-garden[data-theme="night"] .toggle-btn,
+body.theme-zen-garden[data-theme="night"] .canvas-btn,
+body.theme-zen-garden[data-theme="night"] .soundscape-select {
+  background: rgba(22, 32, 28, 0.9);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+body.theme-zen-garden[data-theme="night"] .toggle-btn.is-active {
+  background: #3d6b52;
+  color: #eef8f1;
+}
+
+body.theme-zen-garden[data-theme="night"] .movement-list ol {
+  border-left-color: rgba(123, 201, 160, 0.3);
+}

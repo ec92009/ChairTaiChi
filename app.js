@@ -181,7 +181,7 @@ class AmbientMusicSynth {
     this.init();
     if (this.isPlaying) return;
     this.isPlaying = true;
-    
+
     if (this.ctx.state === "suspended") {
       this.ctx.resume();
     }
@@ -194,11 +194,11 @@ class AmbientMusicSynth {
   stop() {
     if (!this.isPlaying) return;
     this.isPlaying = false;
-    
+
     if (this.masterGain) {
       this.masterGain.gain.linearRampToValueAtTime(0.0, this.ctx.currentTime + 1.5);
     }
-    
+
     if (this.chordTimeout) {
       clearTimeout(this.chordTimeout);
       this.chordTimeout = null;
@@ -248,20 +248,20 @@ class AmbientMusicSynth {
     frequencies.forEach(freq => {
       const osc = this.ctx.createOscillator();
       const gainNode = this.ctx.createGain();
-      
+
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-      
+
       const filter = this.ctx.createBiquadFilter();
       filter.type = 'lowpass';
-      
+
       let cutoff = 800;
       if (state.soundscapePreset === 'forest') cutoff = 320;
       if (state.soundscapePreset === 'ocean') cutoff = 1100;
       filter.frequency.setValueAtTime(cutoff, this.ctx.currentTime);
 
       gainNode.gain.setValueAtTime(0.0, this.ctx.currentTime);
-      
+
       let baseGain = 0.035;
       if (state.soundscapePreset === 'forest') baseGain = 0.045;
       if (state.soundscapePreset === 'ocean') baseGain = 0.03;
@@ -281,7 +281,7 @@ class AmbientMusicSynth {
       const waveGain = this.ctx.createGain();
       waveOsc.type = 'triangle';
       waveOsc.frequency.setValueAtTime(55.0, this.ctx.currentTime); // low rumble
-      
+
       const waveFilter = this.ctx.createBiquadFilter();
       waveFilter.type = 'lowpass';
       waveFilter.frequency.setValueAtTime(90, this.ctx.currentTime);
@@ -315,7 +315,7 @@ class AmbientMusicSynth {
 
   playChime() {
     if (!this.isPlaying || !this.ctx) return;
-    
+
     let chimeFreqs = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
     if (state.soundscapePreset === 'forest') {
       chimeFreqs = [293.66, 329.63, 392.00, 440.00, 523.25, 587.33];
@@ -331,7 +331,7 @@ class AmbientMusicSynth {
     osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
 
     gainNode.gain.setValueAtTime(0.0, this.ctx.currentTime);
-    
+
     let peakVol = 0.015 * state.musicVolume;
     let decayTime = state.soundscapePreset === 'forest' ? 1.5 : 3.0;
 
@@ -339,7 +339,7 @@ class AmbientMusicSynth {
     gainNode.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + decayTime);
 
     const delayNode = this.ctx.createDelay();
-    
+
     let delayVal = 0.4;
     let feedbackVal = 0.4;
     if (state.soundscapePreset === 'ocean') {
@@ -385,7 +385,7 @@ const VoiceGuide = {
     msg.rate = 0.85;
     msg.pitch = 1.0;
     msg.volume = state.voiceVolume; // Apply the slider voice volume
-    
+
     const voices = window.speechSynthesis.getVoices();
     const englishVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) ||
                           voices.find(v => v.lang.startsWith('en') && v.name.includes('Natural')) ||
@@ -395,7 +395,7 @@ const VoiceGuide = {
     }
     window.speechSynthesis.speak(msg);
   },
-  
+
   cancel() {
     window.speechSynthesis.cancel();
   }
@@ -431,7 +431,7 @@ function draw3DLimb(ctx, x1, y1, x2, y2, width, isBackground, dynamicZoom) {
 
   const px = -dy / len;
   const py = dx / len;
-  
+
   const grad = ctx.createLinearGradient(
     (x1 + x2)/2 - px * w/2, (y1 + y2)/2 - py * w/2,
     (x1 + x2)/2 + px * w/2, (y1 + y2)/2 + py * w/2
@@ -461,7 +461,7 @@ function drawTeslaJoint(ctx, x, y, radius, isBackground, dynamicZoom) {
   const cx = x - r * 0.25;
   const cy = y - r * 0.25;
   const grad = ctx.createRadialGradient(cx, cy, 1, x, y, r);
-  
+
   if (isBackground) {
     grad.addColorStop(0, "#475569");
     grad.addColorStop(0.7, "#334155");
@@ -484,13 +484,13 @@ function drawTeslaJoint(ctx, x, y, radius, isBackground, dynamicZoom) {
   ctx.beginPath();
   ctx.arc(x, y, r * 0.35, 0, 2 * Math.PI);
   ctx.fill();
-  
+
   ctx.restore();
 }
 
 function drawTeslaHead3D(ctx, headX, headY, headZ, headRadius, shCenterX, shCenterY, shCenterZ, dynamicZoom, px, py, pz) {
   const headP = project3D(headX, headY, headZ);
-  
+
   // Use the chest forward vector (defaulting to +Z if undefined)
   const forwardX = px !== undefined ? px : 0;
   const forwardY = py !== undefined ? py : 0;
@@ -537,7 +537,7 @@ function drawTeslaHead3D(ctx, headX, headY, headZ, headRadius, shCenterX, shCent
   // 3. Draw Visor (if facing the camera)
   if (visorP.depth < headP.depth) {
     ctx.save();
-    
+
     // Clip visor to head sphere bounds so it wraps smoothly and never overflows
     ctx.beginPath();
     ctx.arc(headP.x, headP.y, r - 0.5 * dynamicZoom, 0, 2 * Math.PI);
@@ -557,7 +557,7 @@ function drawTeslaHead3D(ctx, headX, headY, headZ, headRadius, shCenterX, shCent
     ctx.fillStyle = visorGrad;
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = 1.5 * dynamicZoom;
-    
+
     ctx.beginPath();
     ctx.ellipse(visorP.x, visorP.y, rx, ry, 0, 0, 2 * Math.PI);
     ctx.fill();
@@ -584,11 +584,11 @@ function drawTeslaHead3D(ctx, headX, headY, headZ, headRadius, shCenterX, shCent
 
 function drawTeslaTorso(ctx, shX, shY, shZ, lShX, lShY, lShZ, rShX, rShY, rShZ, pelvisX, pelvisY, pelvisZ, breathVal, dynamicZoom) {
   ctx.save();
-  
+
   // Project center points
   const shCenterP = project3D(shX, shY, shZ);
   const pelvisP = project3D(pelvisX, pelvisY, pelvisZ);
-  
+
   // 1. Black Spine backbone linkage
   ctx.strokeStyle = "#0f172a";
   ctx.lineWidth = 10 * dynamicZoom;
@@ -706,7 +706,7 @@ function drawTeslaTorso(ctx, shX, shY, shZ, lShX, lShY, lShZ, rShX, rShY, rShZ, 
       draw: () => {
         const fill = getGrad(pTLF, pBRF, "#ffffff", "#cbd5e1");
         drawFace(pTLF, pTRF, pBRF, pBLF, fill);
-        
+
         // Specular highlight line along the left-front edge
         ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
         ctx.lineWidth = 1.5 * dynamicZoom;
@@ -832,7 +832,7 @@ function drawTeslaHand(ctx, x, y, isBackground, dynamicZoom) {
   ctx.moveTo(x, y);
   ctx.lineTo(x + 5 * dynamicZoom, y + 2 * dynamicZoom);
   ctx.stroke();
-  
+
   ctx.restore();
 }
 
@@ -854,7 +854,7 @@ function drawTeslaFoot(ctx, x, y, dynamicZoom) {
 
 // --- Camera & 3D Projection Configuration ---
 const cameraDefaults = {
-  yaw: -0.45,
+  yaw: Math.PI - 0.45,
   pitch: 0.15,
   zoom: 2.1,
   panX: 0,
@@ -897,13 +897,23 @@ function drawScene(timestamp) {
   const canvas = document.getElementById("animationCanvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
+
+  // Resize drawing buffer to match layout display size
+  const rect = canvas.getBoundingClientRect();
+  const targetWidth = Math.floor(rect.width);
+  const targetHeight = Math.floor(rect.height);
+  if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+  }
+
   const width = canvas.width;
   const height = canvas.height;
-  
+
   ctx.clearRect(0, 0, width, height);
 
   const t = timestamp ? timestamp / 1000 : Date.now() / 1000;
-  
+
   // Auto-orbit camera angle adjustment
   if (state.autoOrbit && !isDragging && !isTouchDragging) {
     camera.yaw += 0.0035;
@@ -921,7 +931,7 @@ function drawScene(timestamp) {
   const minRadius = 75 * scale;
   const maxRadius = 92 * scale;
   const radius = minRadius + breathVal * (maxRadius - minRadius);
-  
+
   ctx.save();
   ctx.strokeStyle = "rgba(110, 143, 121, 0.25)";
   ctx.lineWidth = 6 * scale;
@@ -968,7 +978,7 @@ function drawScene(timestamp) {
     lShoulderY -= stretch;
     rShoulderY -= stretch;
     headY -= stretch * 1.3;
-    
+
     lElbowX = -14; lElbowY = 10 - stretch; lElbowZ = 8;
     lHandX = -9; lHandY = 32; lHandZ = 20;
     rElbowX = 14; rElbowY = 10 - stretch; rElbowZ = 8;
@@ -1011,17 +1021,17 @@ function drawScene(timestamp) {
     shCenterX += waveProgress * 2;
     shCenterY += waveProgress * 14;
     shCenterZ += waveProgress * 15;
-    
+
     lShoulderX += waveProgress * 2; lShoulderY += waveProgress * 14; lShoulderZ += waveProgress * 15;
     rShoulderX += waveProgress * 2; rShoulderY += waveProgress * 14; rShoulderZ += waveProgress * 15;
-    
+
     headX += waveProgress * 3;
     headY += waveProgress * 20;
     headZ += waveProgress * 22;
 
     lElbowX = -14; lElbowY = 15 + waveProgress * 10; lElbowZ = 10 + waveProgress * 12;
     lHandX = -8; lHandY = 32 + waveProgress * 4; lHandZ = 20 + waveProgress * 12;
-    
+
     rElbowX = 14; rElbowY = 15 + waveProgress * 10; rElbowZ = 10 + waveProgress * 12;
     rHandX = 8; rHandY = 32 + waveProgress * 4; rHandZ = 20 + waveProgress * 12;
 
@@ -1059,7 +1069,7 @@ function drawScene(timestamp) {
 
     rElbowX = 13; rElbowY = 16 - stretch; rElbowZ = 12;
     rHandX = 8; rHandY = 35; rHandZ = 24;
-    
+
   } else if (currentMove === "Parting Clouds") {
     const wave = Math.sin(animTime * 1.2);
     const cosWave = Math.cos(animTime * 1.2);
@@ -1104,7 +1114,7 @@ function drawScene(timestamp) {
     lElbowX = -14 * cosT;
     lElbowY = 12 - lSpeed * 15;
     lElbowZ = 8 + lSpeed * 6 - 13 * sinT;
-    
+
     lHandX = -8 * cosT;
     lHandY = 22 - lSpeed * 32;
     lHandZ = 16 + lSpeed * 12 - 13 * sinT;
@@ -1122,7 +1132,7 @@ function drawScene(timestamp) {
     const angle = twist * 0.5;
     const cosT = Math.cos(angle);
     const sinT = Math.sin(angle);
-    
+
     lShoulderX = -13 * cosT; lShoulderZ = -13 * sinT;
     rShoulderX = 13 * cosT; rShoulderZ = 13 * sinT;
     headX = 5 * sinT; headZ = 5 * cosT - 5;
@@ -1136,7 +1146,7 @@ function drawScene(timestamp) {
   } else if (currentMove === "Pouring Tea") {
     const cycle = Math.sin(animTime * 1.1);
     const tilt = cycle * 0.15; // side tilt
-    
+
     const cosT = Math.cos(tilt * 0.5);
     const sinT = Math.sin(tilt * 0.5);
 
@@ -1185,10 +1195,10 @@ function drawScene(timestamp) {
 
   } else if (currentMove === "Seated Push") {
     const push = breathVal;
-    
+
     lElbowX = -12; lElbowY = 14; lElbowZ = 8 + push * 12;
     lHandX = -8; lHandY = 14; lHandZ = 18 + push * 24;
-    
+
     rElbowX = 12; rElbowY = 14; rElbowZ = 8 + push * 12;
     rHandX = 8; rHandY = 14; rHandZ = 18 + push * 24;
   }
@@ -1197,22 +1207,22 @@ function drawScene(timestamp) {
   const pelvisP = project3D(pelvisX, pelvisY, pelvisZ);
   const lHipP = project3D(lHipX, lHipY, lHipZ);
   const rHipP = project3D(rHipX, rHipY, rHipZ);
-  
+
   const lKneeP = project3D(lKneeX, lKneeY, lKneeZ);
   const rKneeP = project3D(rKneeX, rKneeY, rKneeZ);
-  
+
   const lAnkleP = project3D(lAnkleX, lAnkleY, lAnkleZ);
   const rAnkleP = project3D(rAnkleX, rAnkleY, rAnkleZ);
-  
+
   const shCenterP = project3D(shCenterX, shCenterY, shCenterZ);
   const lShoulderP = project3D(lShoulderX, lShoulderY, lShoulderZ);
   const rShoulderP = project3D(rShoulderX, rShoulderY, rShoulderZ);
-  
+
   const headP = project3D(headX, headY, headZ);
-  
+
   const lElbowP = project3D(lElbowX, lElbowY, lElbowZ);
   const lHandP = project3D(lHandX, lHandY, lHandZ);
-  
+
   const rElbowP = project3D(rElbowX, rElbowY, rElbowZ);
   const rHandP = project3D(rHandX, rHandY, rHandZ);
 
@@ -1221,10 +1231,10 @@ function drawScene(timestamp) {
   const chairFrontRP = project3D(16, 36, 16);
   const chairBackLP = project3D(-16, 36, -16);
   const chairBackRP = project3D(16, 36, -16);
-  
+
   const chairTopLP = project3D(-16, -12, -16);
   const chairTopRP = project3D(16, -12, -16);
-  
+
   const chairLegFrontLP = project3D(-16, 75, 16);
   const chairLegFrontRP = project3D(16, 75, 16);
   const chairLegBackLP = project3D(-16, 75, -16);
@@ -1241,12 +1251,12 @@ function drawScene(timestamp) {
   ctx.lineTo(chairFrontRP.x, chairFrontRP.y);
   ctx.lineTo(chairFrontLP.x, chairFrontLP.y);
   ctx.closePath();
-  
+
   ctx.moveTo(chairBackLP.x, chairBackLP.y);
   ctx.lineTo(chairTopLP.x, chairTopLP.y);
   ctx.lineTo(chairTopRP.x, chairTopRP.y);
   ctx.lineTo(chairBackRP.x, chairBackRP.y);
-  
+
   ctx.moveTo(chairFrontLP.x, chairFrontLP.y);
   ctx.lineTo(chairLegFrontLP.x, chairLegFrontLP.y);
   ctx.moveTo(chairFrontRP.x, chairFrontRP.y);
@@ -1391,7 +1401,7 @@ function render() {
   moveTitle.textContent = move.title;
   moveDescription.textContent = move.text;
   moveProgress.style.width = `${progress}%`;
-  
+
   playBtn.textContent = state.playing
     ? "Pause"
     : state.elapsed >= routine.seconds
@@ -1443,7 +1453,7 @@ function jumpToMove(index) {
   state.elapsed = Math.min(currentRoutine().seconds, index * secondsPerMove());
   state.lastTick = null;
   render();
-  
+
   if (oldIndex !== index && state.playing) {
     speakCurrentMove();
   }
@@ -1466,7 +1476,7 @@ function updateBreathCue() {
   const breathCue = document.querySelector("#breathCue");
   if (breathOrb) breathOrb.classList.toggle("is-expanded", state.breathExpanded);
   if (breathCue) breathCue.textContent = state.breathExpanded ? "Exhale" : "Inhale";
-  
+
   if (state.playing && state.musicOn) {
     ambientSynth.setBreathingIntensity(state.breathExpanded);
   }
@@ -1484,7 +1494,7 @@ function tick(timestamp) {
   const delta = (timestamp - state.lastTick) / 1000;
   state.lastTick = timestamp;
   const routine = currentRoutine();
-  
+
   const oldIndex = state.moveIndex;
   state.elapsed = Math.min(routine.seconds, state.elapsed + delta);
   state.moveIndex = Math.min(routine.moves.length - 1, Math.floor(state.elapsed / secondsPerMove()));
@@ -1597,7 +1607,7 @@ if (camFrontBtn) {
   camFrontBtn.addEventListener("click", () => {
     state.autoOrbit = false;
     updateOrbitToggleStyle();
-    camera.yaw = 0;
+    camera.yaw = Math.PI;
     camera.pitch = 0.1;
     camera.panX = 0;
     camera.panY = 8;
@@ -1619,7 +1629,7 @@ if (camTopBtn) {
   camTopBtn.addEventListener("click", () => {
     state.autoOrbit = false;
     updateOrbitToggleStyle();
-    camera.yaw = 0;
+    camera.yaw = Math.PI;
     camera.pitch = Math.PI / 2 - 0.1;
     camera.panX = 0;
     camera.panY = 8;
@@ -1661,7 +1671,7 @@ if (canvasEl) {
     isDragging = true;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
-    
+
     // Right button (2) or Middle button (1) or Shift-key drag = Pan
     if (e.button === 2 || e.button === 1 || e.shiftKey || e.ctrlKey) {
       dragMode = "pan";
@@ -1672,13 +1682,13 @@ if (canvasEl) {
 
   canvasEl.addEventListener("mousemove", (e) => {
     if (!isDragging) return;
-    
+
     const dx = e.clientX - dragStartX;
     const dy = e.clientY - dragStartY;
-    
+
     dragStartX = e.clientX;
     dragStartY = e.clientY;
-    
+
     if (dragMode === "orbit") {
       camera.yaw += dx * 0.0075;
       camera.pitch = Math.max(-Math.PI / 2 + 0.05, Math.min(Math.PI / 2 - 0.05, camera.pitch + dy * 0.0075));
@@ -1734,14 +1744,14 @@ if (canvasEl) {
 
   canvasEl.addEventListener("touchmove", (e) => {
     if (!isTouchDragging) return;
-    
+
     if (touchMode === "orbit" && e.touches.length === 1) {
       const dx = e.touches[0].clientX - touchStartX;
       const dy = e.touches[0].clientY - touchStartY;
-      
+
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
-      
+
       camera.yaw += dx * 0.0075;
       camera.pitch = Math.max(-Math.PI / 2 + 0.05, Math.min(Math.PI / 2 - 0.05, camera.pitch + dy * 0.0075));
     } else if (touchMode === "zoom" && e.touches.length === 2) {

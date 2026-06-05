@@ -3,30 +3,41 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Chair Tai Chi</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>Chair Tai Chi — Option 2 · Midnight Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;700&family=Instrument+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="theme-chrome.css">
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../chooser-nav.css">
+    <link rel="stylesheet" href="../proposal-chrome.css">
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="stylesheet" href="theme.css">
     <link rel="stylesheet" href="theme-night.css">
   </head>
-  <body class="theme-sunrise-editorial" data-theme="day">
-    <header class="app-theme-bar" aria-label="Appearance">
+  <body class="theme-midnight-studio" data-proposal="midnight-studio" data-theme="day">
+    <header class="chooser-nav" aria-label="UI look chooser">
+      <nav class="chooser-nav__tabs" aria-label="Choose UI direction">
+        <a href="../original/" data-chooser-option="original">Original</a>
+        <a href="../zen-garden/" data-chooser-option="zen-garden">Option 1</a>
+        <a href="../midnight-studio/" data-chooser-option="midnight-studio">Option 2</a>
+        <a href="../sunrise-editorial/" data-chooser-option="sunrise-editorial">Option 3</a>
+      </nav>
+    </header>
+    <header class="proposal-ribbon">
+      <span class="proposal-ribbon-note">Draft look</span>
       <button type="button" class="theme-mode-toggle" id="themeModeToggle" aria-pressed="false">
         <span class="theme-mode-toggle__icon" aria-hidden="true">☀️</span>
         <span class="theme-mode-toggle__label">Day</span>
       </button>
     </header>
-
-    <main class="app-shell">
+<main class="app-shell">
       <section class="practice-stage" aria-label="Chair Tai Chi practice">
         <div class="photo-panel" aria-hidden="true"></div>
 
         <div class="practice-panel">
           <header class="topbar">
             <div>
-              <p class="eyebrow">Seated practice <span class="app-version">v90.0</span></p>
+              <p class="eyebrow">Seated practice <span class="app-version">v89.0</span></p>
               <h1>Chair Tai Chi</h1>
             </div>
             <div class="session-clock" aria-live="polite">
@@ -87,7 +98,7 @@
                     <span class="icon">🔊</span> Voice: On
                   </button>
                 </div>
-
+                
                 <div class="settings-row">
                   <div class="settings-group">
                     <label for="soundscapeSelect">Soundscape</label>
@@ -135,8 +146,8 @@
         </section>
       </aside>
     </main>
-
-    <script src="theme-toggle.js"></script>
-    <script src="app.js"></script>
+    <script src="../../chooser-nav.js"></script>
+    <script src="../theme-toggle.js"></script>
+    <script src="../../../app.js"></script>
   </body>
 </html>
